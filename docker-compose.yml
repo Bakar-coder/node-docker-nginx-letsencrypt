@@ -1,21 +1,28 @@
-version: '3.1'
+version: "3.8"
 
 services:
-  nginx:
-    image: nginx:latest
-    volumes:
-      - ./nginx/node.conf:/etc/nginx/conf.d/node.template
+  webserver:
+    restart: unless-stopped
+    container_name: webserver
+    image: staticfloat/nginx-certbot
     ports:
-      - '8080:80'
-    command: 'bash -c "cat /etc/nginx/conf.d/node.template > /etc/nginx/conf.d/default.conf && nginx -g ''daemon off;''"'
+      - 80:80/tcp
+      - 443:443/tcp
+    environment:
+      CERTBOT_EMAIL: ghettohustlers256@gmail.com
+    volumes:
+      - ./conf.d:/etc/nginx/user.conf.d:ro
+      - letsencrypt:/etc/letsencrypt
+
   node:
-    image: node:10.14
+    build:
+      context: ./app
+    container_name: node
     user: node
-    working_dir: /home/node/app
     environment:
       - NODE_ENV=production
-    volumes:
-      - ./app:/home/node/app
     ports:
-      - '3000:3000'
-    command: 'npm start'
+      - "3000:3000"
+
+volumes:
+  letsencrypt:
