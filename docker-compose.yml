@@ -5,28 +5,17 @@ services:
     container_name: webserver
     image: nginx:1.21.0-alpine
     restart: unless-stopped
-    ports:
-      - "80:80"
-      - "443:443"
     volumes:
-      - web-root:/var/www/html
-      - ./nginx/nginx-conf:/etc/nginx/conf.d
-      - certbot-etc:/etc/letsencrypt
-      - certbot-var:/var/lib/letsencrypt
-      - dhparam:/etc/ssl/certs
+      - /docker/nginx/conf:/etc/nginx:ro
+      - /docker/nginx/www/:/var/www:ro
+      - /certs/letsencrypt:/etc/letsencrypt:ro
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - /var/log:/var/log
+    ports:
+      - 80:80
+      - 443:443
     depends_on:
       - node-server
-
-  certbot:
-    image: certbot/certbot
-    container_name: certbot
-    volumes:
-      - certbot-etc:/etc/letsencrypt
-      - certbot-var:/var/lib/letsencrypt
-      - web-root:/var/www/html
-    depends_on:
-      - webserver
-    command: certonly --webroot --webroot-path=/var/www/html --email ghettohustlers256@gmail.com --agree-tos --no-eff-email --staging -d ghettohustler.com  -d www.ghettohustler.com
 
   # Run the node application
   node-server:
@@ -36,16 +25,3 @@ services:
       - NODE_ENV=production
     build:
       context: ./app
-
-  # Run the caddy server
-
-volumes:
-  certbot-etc:
-  certbot-var:
-  dhparam:
-  web-root:
-    driver: local
-    driver_opts:
-      type: none
-      device: /home/node/app/dhparam/
-      o: bind
