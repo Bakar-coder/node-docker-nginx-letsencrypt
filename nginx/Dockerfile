@@ -1,7 +1,6 @@
-FROM nginx:1.21.0-alpine
-# RUN rm /var/log/nginx/access-out.log
-# RUN rm /var/log/nginx/error-out.log
-COPY nginx.conf /etc/nginx/nginx.conf
-
+FROM nginx:1.19.10-alpine
+RUN rm /etc/nginx/conf.d/*
+COPY ./nginx.conf /etc/nginx/conf.d/default.conf
 EXPOSE "80"
 EXPOSE "443"
+CMD [ "nginx", "-g", "daemon off;" ]
