@@ -1,5 +1,4 @@
-FROM nginx
-
+FROM nginx:1.21.0-alpine
 # RUN rm /var/log/nginx/access-out.log
 # RUN rm /var/log/nginx/error-out.log
 COPY nginx.conf /etc/nginx/nginx.conf

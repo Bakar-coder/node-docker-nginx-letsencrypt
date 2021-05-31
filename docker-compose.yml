@@ -2,22 +2,24 @@ version: "3.7"
 
 services:
   app:
-    build: ./app
+    build:
+      context: ./app
     container_name: app
     # ports:
     #   - "80:3000"
     #   - "443:443"
     restart: always
     volumes:
-      - certbot-webroot-evsoul:/app/public/.well-known
+      - certbot-webroot-ghettohustler:/app/public/.well-known
       - certbot-letsencrypt:/etc/letsencrypt
 
   certbot:
-    build: ./certbot
+    build:
+      context: ./certbot
     container_name: certbot
     restart: always
     volumes:
-      - certbot-webroot-evsoul:/webroots/evsoul.com/.well-known
+      - certbot-webroot-ghettohustler:/webroots/ghettohustler.com/.well-known
       - certbot-letsencrypt:/etc/letsencrypt
 
   nginx:
@@ -29,10 +31,10 @@ services:
     restart: always
     volumes:
       # - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - certbot-webroot-evsoul:/webroots/evsoul.com/.well-known
+      - certbot-webroot-ghettohustler:/webroots/ghettohustler.com/.well-known
       - certbot-letsencrypt:/etc/letsencrypt
     # command: [nginx-debug, '-g', 'daemon off;']
 
 volumes:
-  certbot-webroot-evsoul:
+  certbot-webroot-ghettohustler:
   certbot-letsencrypt:
