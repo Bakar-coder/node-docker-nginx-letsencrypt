@@ -47,5 +47,5 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      device: /home/node/app
+      device: /home/node/app/dhparam/
       o: bind
